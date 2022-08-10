@@ -1,0 +1,20 @@
+{
+    "name": "glaph/GraphClass",
+    "description": "Graphql implementation with classes",
+    "type": "library",
+    "version": "1.0.0",
+    "require": {
+        "webonyx/graphql-php": "^14.11"
+    },
+    "authors": [
+        {
+            "name": "David lopez",
+            "email": "daloalga2@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "GraphClass\\": "src/"
+        }
+    }
+}
