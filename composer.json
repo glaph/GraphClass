@@ -1,5 +1,5 @@
 {
-    "name": "glaph/GraphClass",
+    "name": "glaph/graphclass",
     "description": "Graphql implementation with classes",
     "type": "library",
     "version": "1.0.0",
