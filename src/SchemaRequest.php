@@ -7,7 +7,7 @@ use JsonException;
 final class SchemaRequest {
     public function __construct(
         public string $query,
-        public ?array $variables
+        public ?array $variables = null
     ) {
     }
 

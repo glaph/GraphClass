@@ -7,7 +7,6 @@ use GraphClass\Config\Exception\ConfigException;
 use GraphClass\Config\Exception\IOException;
 
 final class SchemaBuilder {
-
     /**
      * @throws ConfigException
      */
