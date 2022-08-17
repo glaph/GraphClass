@@ -1,0 +1,12 @@
+{
+	lastPost{
+		id
+		title
+		author {
+			name
+			posts {
+				title
+			}
+		}
+	}
+}
