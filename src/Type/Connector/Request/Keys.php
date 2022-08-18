@@ -2,7 +2,13 @@
 
 namespace GraphClass\Type\Connector\Request;
 
-final class Keys implements \IteratorAggregate {
+use Iterator;
+use IteratorAggregate;
+
+/**
+ * @template-implements IteratorAggregate<string, string[]|int[]>
+ */
+final class Keys implements IteratorAggregate {
     /** @var string[][] */
     public array $values = [];
 
@@ -45,9 +51,9 @@ final class Keys implements \IteratorAggregate {
     }
 
     /**
-     * @return \Iterator<string[]>
+     * @return Iterator<string, string[]|int[]>
      */
-    public function getIterator(): \Iterator {
+    public function getIterator(): Iterator {
         return new \ArrayIterator($this->values);
     }
 }
