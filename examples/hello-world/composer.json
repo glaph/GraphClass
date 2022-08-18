@@ -1,5 +1,5 @@
 {
-    "name": "graph-class/basic",
+    "name": "graph-class/hello-world",
     "type": "project",
     "require": {
         "php": "^8.1",

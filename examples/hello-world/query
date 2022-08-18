@@ -1,0 +1,5 @@
+{
+	helloWorld
+	helloEmpty: hello
+	helloAna: hello(name: "Ana")
+}
