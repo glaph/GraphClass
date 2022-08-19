@@ -2,6 +2,7 @@
 
 namespace App\Type;
 
+use GraphClass\Type\Attribute\ArrayField;
 use GraphClass\Type\Attribute\Field;
 use GraphClass\Type\FieldType;
 
@@ -9,8 +10,7 @@ class Author extends FieldType {
     #[Field] public int $id;
     #[Field] public string $name;
     #[Field] public string $surname;
-    /** @var Post[]|null  */
-    #[Field] public ?array $posts;
+    #[ArrayField(Post::class)] public ?array $posts;
 
     public static function create(...$data): self
     {
