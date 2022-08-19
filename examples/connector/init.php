@@ -1,6 +1,6 @@
 <?php
 
-use App\Query;
+use App\GraphQL\Query;
 use GraphClass\SchemaBuilder;
 use GraphClass\SchemaOptions;
 use GraphClass\SchemaRequest;

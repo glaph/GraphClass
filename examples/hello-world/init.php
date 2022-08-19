@@ -19,3 +19,4 @@ $response = $schema(new SchemaRequest(
 ));
 
 echo json_encode($response);
+echo PHP_EOL;

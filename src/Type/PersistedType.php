@@ -38,8 +38,7 @@ abstract class PersistedType extends FieldType {
         });
     }
 
-    public function persist(Group $group): Response\Keys
-    {
+    public function persist(Group $group): Response\Keys {
         $connection = Connection::getInstance($group->connectorClass);
         $builder = $connection->getBuilder($group->name, $this);
         $builder->keys = isset($this->_keyValues) ? array_keys($this->_keyValues) : [];
@@ -54,7 +53,7 @@ abstract class PersistedType extends FieldType {
             $builder->addField(new FieldInfo($name, new BuiltinFieldResolver($name, '')), $property);
         }
 
-        $response = $connection->getResponse($this);
+        $response = $connection->getResponse($group->name, $this);
 
         return $response->submit();
     }
@@ -76,6 +75,6 @@ abstract class PersistedType extends FieldType {
         $builder->keyValues = $this->_keyValues;
         $builder->addField($options->field);
 
-        return $connection->getResponse($this);
+        return $connection->getResponse($options->group->name, $this);
     }
 }

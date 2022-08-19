@@ -1,0 +1,20 @@
+{
+  "0": {
+    "id": 0,
+    "name": "Pavo",
+    "surname": "Vilar",
+    "posts": [0]
+  },
+  "1": {
+    "id": 1,
+    "name": "David",
+    "surname": "Lopez",
+    "posts": [1,2]
+  },
+  "2": {
+    "id": 2,
+    "name": "Don",
+    "surname": "Nacho",
+    "posts": []
+  }
+}

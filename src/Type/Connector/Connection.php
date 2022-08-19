@@ -29,13 +29,13 @@ final class Connection {
         return $this->builders[$groupName][$hash];
     }
 
-    public function getResponse(Type $type): Response\Wrapper {
+    public function getResponse(string $groupName, Type $type): Response\Wrapper {
         $hash = $type->getHash();
-        if (!isset($this->responses[$hash])) {
-            $this->responses[$hash] = new Response\Wrapper($this, new ($this->class));
+        if (!isset($this->responses[$groupName][$hash])) {
+            $this->responses[$groupName][$hash] = new Response\Wrapper($this, new ($this->class));
         }
 
-        return $this->responses[$hash];
+        return $this->responses[$groupName][$hash];
     }
 
     public function hydrateResponseWrappers(): void {
@@ -61,8 +61,8 @@ final class Connection {
                 }
 
                 $request->keys->addValues($builder->keyValues);
-                $this->responses[$hash]->request = $request;
-                $this->responses[$hash]->response = $response;
+                $this->responses[$groupName][$hash]->request = $request;
+                $this->responses[$groupName][$hash]->response = $response;
             }
         }
 
