@@ -2,14 +2,13 @@
 
 namespace GraphClass\Type;
 
-use App\Resolvers\FieldResolver;
 use Exception;
 use GraphClass\Resolver\BuiltinFieldResolver;
 use GraphClass\Resolver\FieldInfo;
 use GraphClass\Resolver\ResolverOptions;
-use GraphClass\Type\Attribute\Group;
 use GraphClass\Type\Connector\Connection;
 use GraphClass\Type\Connector\Response;
+use GraphClass\Utils\ConfigFinder;
 use GraphQL\Deferred;
 
 abstract class PersistedType extends FieldType {
@@ -33,27 +32,42 @@ abstract class PersistedType extends FieldType {
         $response = $this->getResponse($options);
 
         return new Deferred(function() use($options, $response) {
-            $response->hydrateType($options->field, $this);
+            $response->hydrateType($options->getField(), $this);
             return parent::retrieve($options);
         });
     }
 
-    public function persist(Group $group): Response\Keys {
-        $connection = Connection::getInstance($group->connectorClass);
-        $builder = $connection->getBuilder($group->name, $this);
+    public function persist(ResolverOptions $options): mixed {
+        $class = explode("\\", static::class);
+        $className = array_pop($class);
+        $configType = ConfigFinder::type($options->info->parentType, $className);
+        $connection = Connection::getInstance($configType->group->connectorClass, $configType->group->name);
+        $builder = $connection->getBuilder($this);
         $builder->keys = isset($this->_keyValues) ? array_keys($this->_keyValues) : [];
         $builder->keyValues = isset($this->_keyValues) ? array_values($this->_keyValues) : [];
+        $properties = [];
 
         foreach ($this as $name => $property) {
             if (str_starts_with($name, '_')) continue;
+            $properties[$name] = $property;
+        }
+        if (count($properties) === count($configType->group->keys)) {
+            $onlyKeys = true;
+            foreach ($configType->group->keys as $keyName) {
+                $onlyKeys = $onlyKeys && isset($properties[$keyName]);
+            }
+            if ($onlyKeys) return $properties[$configType->group->keys[0]];
+        }
+
+        foreach ($properties as $name => $property) {
             if ($property instanceof Type) {
-                $property = $property->persist($group)[0];
+                $property = $property->persist($options);
             }
 
             $builder->addField(new FieldInfo($name, new BuiltinFieldResolver($name, '')), $property);
         }
 
-        $response = $connection->getResponse($group->name, $this);
+        $response = $connection->getResponse($this);
 
         return $response->submit();
     }
@@ -67,14 +81,14 @@ abstract class PersistedType extends FieldType {
     }
 
     protected function getResponse(ResolverOptions $options): Response\Wrapper {
-        if (!$options->group) throw new Exception("In PersistedType must exist attribute Group");
-        $connection = Connection::getInstance($options->group->connectorClass);
+        if (!$options->type->group) throw new Exception("In PersistedType must exist attribute Group");
+        $connection = Connection::getInstance($options->type->group->connectorClass, $options->type->group->name);
 
-        $builder = $connection->getBuilder($options->group->name, $this);
-        $builder->keys = $options->group->keys;
+        $builder = $connection->getBuilder($this);
+        $builder->keys = $options->type->group->keys;
         $builder->keyValues = $this->_keyValues;
-        $builder->addField($options->field);
+        $builder->addField($options->getField());
 
-        return $connection->getResponse($options->group->name, $this);
+        return $connection->getResponse($this);
     }
 }

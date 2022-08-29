@@ -2,8 +2,7 @@
 
 namespace GraphClass\Utils;
 
-trait ClassArrayShapeTrait
-{
+trait ClassArrayShapeTrait {
     public function offsetExists(mixed $offset): bool {
         return isset($this->$offset);
     }

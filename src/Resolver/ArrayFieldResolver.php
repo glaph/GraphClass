@@ -2,8 +2,6 @@
 
 namespace GraphClass\Resolver;
 
-use Exception;
-
 final class ArrayFieldResolver implements FieldResolver{
     public function __construct(
         public string $property,
@@ -18,7 +16,8 @@ final class ArrayFieldResolver implements FieldResolver{
         );
     }
 
-    public function resolve($data): array {
+    public function resolve($data): ?array {
+        if ($data === null) return null;
         $newData = [];
         foreach ($data as $key => $item) {
             $newData[$key] = $this->itemResolver->resolve($item);

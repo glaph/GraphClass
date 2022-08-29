@@ -19,6 +19,7 @@ final class BuiltinFieldResolver implements FieldResolver{
     }
 
     public function resolve($data): mixed {
+        if ($data === null) return null;
         $changed = settype($data, $this->type);
         if (!$changed) throw new Exception("Fail to set $this->property to $this->type");
 

@@ -6,7 +6,8 @@ use GraphClass\Resolver\ResolverOptions;
 
 abstract class QueryType {
     public function retrieve(ResolverOptions $options): mixed {
-        if ($method = $options->field->get?->method) {
+        $field = $options->getField();
+        if ($method = $field->get?->method) {
             return $this->$method($options->args->getParsed());
         }
 

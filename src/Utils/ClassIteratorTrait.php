@@ -2,8 +2,7 @@
 
 namespace GraphClass\Utils;
 
-trait ClassIteratorTrait
-{
+trait ClassIteratorTrait {
     private mixed $_currentKey;
     private mixed $_currentValue;
     private array $_vars;

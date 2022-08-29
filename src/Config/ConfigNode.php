@@ -8,6 +8,7 @@ use GraphClass\Config\Trait\SecureAssignationTrait;
 use GraphClass\Input\Input;
 use GraphClass\Type\QueryType;
 use GraphClass\Type\Type;
+use GraphQL\Type\Definition\ScalarType;
 use ReflectionClass;
 use ReflectionException;
 
@@ -18,6 +19,7 @@ final class ConfigNode extends Cache {
     public readonly ?ConfigType $root;
     public readonly ?ConfigType $type;
     public readonly ?ConfigInput $input;
+    public readonly ?ConfigScalar $scalar;
 
     /**
      * @throws NodeException
@@ -27,6 +29,7 @@ final class ConfigNode extends Cache {
             if ($node->isSubclassOf(QueryType::class)) $this->root = ConfigType::create($node);
             if ($node->implementsInterface(Type::class)) $this->type = ConfigType::create($node);
             if ($node->implementsInterface(Input::class)) $this->input = ConfigInput::create($node);
+            if ($node->isSubclassOf(ScalarType::class)) $this->scalar = ConfigScalar::create($node);
         } catch (Exception $e) {
             throw new NodeException("The node $node->name can't be added", previous: $e);
         }

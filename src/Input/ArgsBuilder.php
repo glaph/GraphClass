@@ -2,18 +2,15 @@
 
 namespace GraphClass\Input;
 
-use GraphClass\Config\ConfigInput;
 use GraphClass\Config\ConfigType;
-use GraphClass\Input\BaseInput;
 use GraphClass\Resolver\ClassFieldResolver;
 use GraphClass\Resolver\FieldResolver;
 use GraphClass\Resolver\Resolvable;
+use GraphClass\Utils\ConfigFinder;
 use GraphQL\Type\Definition\FieldArgument;
-use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
-use JetBrains\PhpStorm\Internal\TentativeType;
 
 final class ArgsBuilder {
 
@@ -69,11 +66,10 @@ final class ArgsBuilder {
     }
 
     private function getResolver(Type $type, string $name): ?FieldResolver {
+        if ($type instanceof NonNull) $type = $type->getOfType();
         if ($type instanceof InputObjectType) {
-            /** @var ConfigInput $configInput */
-            $configInput = $type->config["configInput"];
-            $class = $configInput->class;
-            return new ClassFieldResolver($name, $class);
+            $configInput = ConfigFinder::input($type);
+            if ($configInput) return new ClassFieldResolver($name, $configInput->class);
         }
 
         return null;
@@ -81,16 +77,15 @@ final class ArgsBuilder {
 
     private function resolve(Type $type, mixed $args, ?FieldResolver $resolver): mixed {
         $ret = $resolver ? $resolver->resolve($args) : $args;
+        if ($type instanceof NonNull) $type = $type->getOfType();
         if ($ret instanceof Resolvable && $type instanceof InputObjectType) {
-            /** @var ConfigInput $configInput */
-            $configInput = $type->config["configInput"];
+            $configInput = ConfigFinder::input($type);
+            if (!$configInput) return $ret;
             foreach ($args as $propertyName => $value) {
                 $ret->$propertyName = self::resolve($type->getField($propertyName)->getType(), $value, $configInput->fields[$propertyName]);
             }
 
-            if ($type->config["mutatorConfigType"]) {
-                $this->mutators[$configInput->class] = $type->config["mutatorConfigType"];
-            }
+            $this->mutators[$configInput->class] = ConfigFinder::type($type, $configInput->mutator ?? null);
         }
 
         return $ret;

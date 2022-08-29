@@ -2,22 +2,37 @@
 
 namespace GraphClass\Resolver;
 
+use GraphClass\Config\ConfigType;
 use GraphClass\Input\ArgsBuilder;
-use GraphClass\Type\Attribute\Group;
+use GraphClass\Type\Attribute\VirtualType;
 use GraphQL\Type\Definition\ResolveInfo;
 
 final class ResolverOptions {
-    public FieldInfo $field;
-    public ArgsBuilder $args;
-    public ?Group $group;
+    private FieldInfo $field;
 
     public function __construct(
-        Struct $struct,
-        array $args,
-        ResolveInfo $info,
+        public ConfigType $type,
+        public ArgsBuilder $args,
+        public ResolveInfo $info,
     ) {
-        $this->field = $struct->getField($info->fieldName);
-        $this->args = (new ArgsBuilder)->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
-        $this->group = $struct->group;
+    }
+
+    public function getField(string $field = ""): FieldInfo {
+        if (!$field) {
+            if (isset($this->field)) return $this->field;
+            $field = $this->info->fieldName;
+        }
+        if (!$this->hasFieldResolver($field)) throw new \Exception("Method or property $field in class {$this->type->class} must exist");
+
+        return $this->field = new FieldInfo(
+            name: $field,
+            field: $this->type->fields[$field] ?? null,
+            get: $this->type->virtuals[$field][VirtualType::Get->name] ?? null,
+            set: $this->type->virtuals[$field][VirtualType::Set->name] ?? null
+        );
+    }
+
+    private function hasFieldResolver(string $field): bool {
+        return isset($this->type->virtuals[$field]) || isset($this->type->fields[$field]);
     }
 }

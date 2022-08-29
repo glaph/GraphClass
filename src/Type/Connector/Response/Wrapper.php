@@ -25,13 +25,13 @@ final class Wrapper {
 
         foreach ($field->getFieldResolvers() as $resolver) {
             $fieldName = $resolver->property;
-            if (!isset($type->$fieldName)) {
+            if (!isset($type->$fieldName) && isset($this->response->items[$type->getHash()]->values[$fieldName])) {
                 $type->$fieldName = $resolver->resolve($this->response->items[$type->getHash()]->values[$fieldName]);
             }
         }
     }
 
-    public function submit(): Keys {
+    public function submit(): int|string|null {
         $this->connection->hydrateResponseWrappers();
 
         return $this->connector->submit($this->request, $this->response);

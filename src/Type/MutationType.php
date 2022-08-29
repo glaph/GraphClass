@@ -3,44 +3,42 @@
 namespace GraphClass\Type;
 
 use GraphClass\Config\ConfigType;
-use GraphClass\Input\ArgsBuilder;
 use GraphClass\Input\Input;
 use GraphClass\Resolver\ResolverOptions;
-use GraphClass\Resolver\Struct;
 use GraphClass\Type\Connector\Response\Keys;
 
 abstract class MutationType extends QueryType {
     public function mutate(ResolverOptions $options): void {
         $args = $options->args->getParsed();
-        if ($method = $options->field->set?->method) {
+        if ($method = $options->getField()->set?->method) {
             $this->$method($args);
             return;
         }
 
         foreach ($args as $input) {
             if($options->args->hasMutator($input::class)) {
-                $this->persist($input, $this->createType($input, $options->args), $options->args);
+                $this->persist($input, $this->createType($input, $options), $options);
             }
         }
 
         $args->clearIterator();
     }
 
-    private function createType(Input $input, ArgsBuilder $args): Type {
-        $configType = $args->getMutator($input::class);
+    private function createType(Input $input, ResolverOptions $options): Type {
+        $configType = $options->args->getMutator($input::class);
         $type = $this->instanceType($input, $configType);
-        $struct = Struct::create($configType);
+        $resolver = new ResolverOptions($configType, $options->args, $options->info);
 
         foreach ($input as $name => $value) {
-            $field = $struct->getField($name);
+            $field = $resolver->getField($name);
             if ($method = $field->set?->method) {
-                $tmpType = new ($struct->class);
+                $tmpType = new ($configType->class);
                 $tmpType->$method($value);
                 $this->extractProperties($type, $tmpType);
                 continue;
             }
 
-            $type->$name = $this->getValue($value, $args);
+            $type->$name = $this->getValue($value, $options);
         }
 
         return $type;
@@ -48,7 +46,7 @@ abstract class MutationType extends QueryType {
 
     private function instanceType(Input $input, ConfigType $configType): Type {
         $keys = [];
-        if ($configType?->group?->keys) {
+        if ($configType->group?->keys) {
             foreach ($configType->group->keys as $key) {
                 if (!isset($input->$key)) {
                     $keys = [];
@@ -62,16 +60,16 @@ abstract class MutationType extends QueryType {
         return $keys ? $configType->class::create(...$keys) : new ($configType->class);
     }
 
-    private function getValue(mixed $value, ArgsBuilder $args): mixed {
+    private function getValue(mixed $value, ResolverOptions $options): mixed {
         if ($value instanceof Input) {
-            return $this->createType($value, $args);
+            return $this->createType($value, $options);
         }
 
         return $value;
     }
 
-    private function persist(Input $input, Type $type, ArgsBuilder $args): void {
-        $keys = $type->persist($args->getMutator($input::class)->group);
+    private function persist(Input $input, Type $type, ResolverOptions $options): void {
+        $keys = $type->persist($options);
         if ($keys instanceof Keys) {
             foreach ($keys as $name => $value) {
                 $input->$name = $value;

@@ -7,6 +7,7 @@ use GraphClass\Config\ConfigNode;
 use GraphClass\Resolver\Struct;
 use GraphClass\Resolver\TypeResolver;
 use GraphClass\Type\QueryType;
+use GraphClass\Utils\ConfigFinder;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\GraphQL;
 use GraphQL\Language\AST\Node;
@@ -14,8 +15,6 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Utils\BuildSchema;
 
 final class Schema {
-    private const ROOT_TYPES = ["Query", "Mutation", "Subscription"];
-
     private \GraphQL\Type\Schema $schema;
     /** @var QueryType[] */
     private array $roots = [];
@@ -57,13 +56,15 @@ final class Schema {
 
         if (!$configNode) throw new \Exception("Doesn't exist any class implementation for $name");
 
-        $config = match ($astNode->kind) {
+        $nodeConfig = match ($astNode->kind) {
             NodeKind::OBJECT_TYPE_DEFINITION => $this->configType($configNode),
             NodeKind::INPUT_OBJECT_TYPE_DEFINITION => $this->configInput($configNode, $config),
+            NodeKind::SCALAR_TYPE_DEFINITION => $this->configScalar($configNode, $config),
             default => throw new \Exception("Doesn't exist any class implementation for $name")
         };
+        $nodeConfig[ConfigFinder::FUNC_NAME] = fn($nodeName) => $config->nodes[$nodeName] ?? null;
 
-        $typeConfig = array_merge($typeConfig, $config);
+        $typeConfig = array_merge($typeConfig, $nodeConfig);
     }
 
     private function configType(ConfigNode $configNode): array {
@@ -71,10 +72,10 @@ final class Schema {
 
         if (isset($this->roots[$configNode->name])) {
             if (!isset($configNode->root)) throw new \Exception("Class implementation for root type $configNode->name does not exist");
-            $typeConfig["resolveField"] = TypeResolver::getRootResolver(Struct::create($configNode->root));
+            $typeConfig["resolveField"] = TypeResolver::getRootResolver($configNode->root);
         } else {
             if (!isset($configNode->type)) throw new \Exception("Class implementation for type $configNode->name does not exist");
-            $typeConfig["resolveField"] = TypeResolver::getTypeResolver(Struct::create($configNode->type));
+            $typeConfig["resolveField"] = TypeResolver::getTypeResolver($configNode->type);
         }
 
         return $typeConfig;
@@ -82,14 +83,16 @@ final class Schema {
 
     private function configInput(ConfigNode $configNode, Config $config): array {
         if (!isset($configNode->input)) throw new \Exception("Class implementation for input $configNode->name does not exist");
-        $typeConfig = [];
-
-        $typeConfig["configInput"] = $configNode->input;
         if (isset($configNode->input->mutator)) {
             if (!isset($config->nodes[$configNode->input->mutator]->type)) throw new \Exception("Input $configNode->name has a non existent mutator class");
-            $typeConfig["mutatorConfigType"] = $config->nodes[$configNode->input->mutator]->type;
         }
 
-        return $typeConfig;
+        return [];
+    }
+
+    private function configScalar(ConfigNode $configNode, Config $config): array {
+        if (!isset($configNode->scalar)) throw new \Exception("Class implementation for input $configNode->name does not exist");
+
+        return [];
     }
 }

@@ -3,26 +3,27 @@
 namespace GraphClass\Resolver;
 
 use Closure;
+use GraphClass\Config\ConfigType;
+use GraphClass\Input\ArgsBuilder;
 use GraphClass\Type\MutationType;
 use GraphClass\Type\QueryType;
 use GraphClass\Type\SubscriptionType;
 use GraphClass\Type\Type;
 use Exception;
-use GraphQL\Deferred;
 use GraphQL\Type\Definition\ResolveInfo;
 
 final class TypeResolver {
     private function __construct(
-        private readonly Struct $struct
+        private readonly ConfigType $type
     ) {
     }
 
-    public static function getRootResolver(Struct $struct): Closure {
-        return (new self($struct))->resolveRootField(...);
+    public static function getRootResolver(ConfigType $type): Closure {
+        return (new self($type))->resolveRootField(...);
     }
 
-    public static function getTypeResolver(Struct $struct): Closure {
-        return (new self($struct))->resolveField(...);
+    public static function getTypeResolver(ConfigType $type): Closure {
+        return (new self($type))->resolveField(...);
     }
 
     /**
@@ -31,7 +32,8 @@ final class TypeResolver {
      */
     private function resolveRootField(array $value, $args, $context, ResolveInfo $info) {
         $type = $value[$info->parentType->name];
-        $options = new ResolverOptions($this->struct, $args, $info);
+        $argsBuilder = (new ArgsBuilder)->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
+        $options = new ResolverOptions($this->type, $argsBuilder, $info);
         if ($type instanceof MutationType) {
             $type->mutate($options);
         }
@@ -46,9 +48,9 @@ final class TypeResolver {
      * @throws Exception
      */
     private function resolveField(Type $type, $args, $context, ResolveInfo $info) {
-        if (!$this->struct->instanceOf($type)) throw new Exception("Invalid type");
-        if (!$this->struct->hasFieldResolver($info->fieldName)) throw new Exception("Method $info->fieldName in class {$this->struct->class} must exist");
+        if (!($type instanceof $this->type->class)) throw new Exception("Invalid type");
+        $argsBuilder = (new ArgsBuilder)->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
 
-        return $type->retrieve(new ResolverOptions($this->struct, $args, $info));
+        return $type->retrieve(new ResolverOptions($this->type, $argsBuilder, $info));
     }
 }
