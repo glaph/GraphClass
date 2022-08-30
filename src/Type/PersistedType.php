@@ -43,7 +43,7 @@ abstract class PersistedType extends FieldType {
         $configType = ConfigFinder::type($options->info->parentType, $className);
         $connection = Connection::getInstance($configType->group->connectorClass, $configType->group->name);
         $builder = $connection->getBuilder($this);
-        $builder->keys = isset($this->_keyValues) ? array_keys($this->_keyValues) : [];
+        $builder->keys = $configType->group->keys;
         $builder->keyValues = isset($this->_keyValues) ? array_values($this->_keyValues) : [];
         $properties = [];
 

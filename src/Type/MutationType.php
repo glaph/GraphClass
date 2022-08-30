@@ -69,11 +69,11 @@ abstract class MutationType extends QueryType {
     }
 
     private function persist(Input $input, Type $type, ResolverOptions $options): void {
-        $keys = $type->persist($options);
-        if ($keys instanceof Keys) {
-            foreach ($keys as $name => $value) {
-                $input->$name = $value;
-            }
+        $key = $type->persist($options);
+        $configType = $options->args->getMutator($input::class);
+        if ($configType->group) {
+            $keyName = $configType->group->keys[0];
+            $input->$keyName = $key;
         }
     }
 

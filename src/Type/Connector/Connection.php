@@ -2,6 +2,7 @@
 
 namespace GraphClass\Type\Connector;
 
+use GraphClass\Type\Connector\Request\Keys;
 use GraphClass\Type\Type;
 
 final class Connection {
@@ -55,12 +56,14 @@ final class Connection {
             }
 
             if (!$request) {
-                $request = new Request($builder->fields, $this->group, $builder->keys);
+                $request = new Request($builder->fields, $this->group, new Keys($builder->keys));
                 $response = new Response();
                 $map[$hash] = [$request, $response];
             }
 
-            $request->keys->addValues($builder->keyValues);
+            if ($hash !== "new") {
+                $request->keys->addValues($builder->keyValues);
+            }
             $this->responses[$hash]->request = $request;
             $this->responses[$hash]->response = $response;
         }
