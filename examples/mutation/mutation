@@ -1,0 +1,10 @@
+mutation someName($new: IComment!, $update: IComment!) {
+	new: comment(input: $new) {
+		id
+		username
+		text
+	}
+	update: comment(input: $update) {
+		text
+	}
+}

@@ -1,0 +1,20 @@
+{
+    "0": {
+        "id": 0,
+        "username": "Someone",
+        "text": "Some question",
+        "post": 2
+    },
+    "1": {
+        "id": 1,
+        "username": "Author",
+        "text": "Some answer",
+        "post": 1
+    },
+    "2": {
+        "id": 2,
+        "username": "Someone",
+        "text": "Anything",
+        "post": 1
+    }
+}

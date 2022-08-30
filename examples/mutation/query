@@ -1,0 +1,29 @@
+{
+	lastPost {
+		id
+		title
+		author {
+			name
+			posts {
+				title
+			}
+		}
+	}
+	allAuthors {
+		name
+		surname
+		posts {
+			title
+		}
+	}
+	post(id: 1) {
+		id
+		title
+		author {
+			name
+			posts {
+				title
+			}
+		}
+	}
+}

@@ -1,0 +1,61 @@
+scalar ID
+scalar FID
+scalar String
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  lastPost: Post
+  post(id: ID): Post
+  allAuthors: [Author]
+}
+
+type Mutation {
+  post(input: IPost!): Post
+  author(input: IAuthor!): Author
+  comment(input: IComment!): Comment
+}
+
+type Post {
+  id: ID!
+  title: String!
+  body: String
+  author: Author!
+}
+
+type Author {
+  id: ID!
+  name: String!
+  surname: String!
+  posts: [Post]
+}
+
+type Comment {
+  id: ID!
+  username: String!
+  text: String!
+  post: Post!
+}
+
+input IPost {
+  id: ID
+  title: String
+  body: String
+  author: IAuthor
+}
+
+input IAuthor {
+  id: ID
+  name: String
+  surname: String
+}
+
+input IComment {
+  id: ID
+  username: String
+  text: String
+  post: IPost
+}
