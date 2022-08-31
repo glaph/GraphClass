@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type\Connector\Request;
 
 use Iterator;
@@ -24,7 +26,9 @@ final class Keys implements IteratorAggregate {
      * @param string[] $values
      */
     public function addValues(array $values): void {
-        if(count($values) !== count($this->names)) throw new \Exception("Keys values must be the same number as the attribute Key");
+        if (count($values) !== count($this->names)) {
+            throw new \Exception("Keys values must be the same number as the attribute Key");
+        }
         $names = $this->names;
         $parsedValues = [];
         foreach ($names as $key => $name) {

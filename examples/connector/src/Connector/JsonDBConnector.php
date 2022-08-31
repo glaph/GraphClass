@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Connector;
 
 use GraphClass\Type\Connector\Connector;
@@ -12,7 +14,9 @@ class JsonDBConnector implements Connector {
         $jsonPath = "$root/db/$request->group.json";
         $json = file_get_contents($jsonPath);
 
-        if ($json === false) return;
+        if ($json === false) {
+            return;
+        }
 
         $data = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
         foreach ($request->keys as $hash => $key) {
@@ -24,13 +28,15 @@ class JsonDBConnector implements Connector {
                 }
                 $itemValues = $itemValues[$keyValue];
             }
-            if (!$itemValues) continue;
+            if (!$itemValues) {
+                continue;
+            }
 
             $response->addItem(new Response\Item($hash, $itemValues));
         }
     }
 
-    public function submit(Request $request, Response $response): ?int{
+    public function submit(Request $request, Response $response): ?int {
         return null;
     }
 }

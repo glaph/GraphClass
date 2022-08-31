@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Utils;
 
 use GraphClass\Config\ConfigInput;
@@ -28,7 +30,9 @@ class ConfigFinder {
     }
 
     public static function node(Type $type, ?string $name = null): ?ConfigNode {
-        if (isset($type->config[self::FUNC_NAME])) return $type->config[self::FUNC_NAME]($name ?? $type->name);
+        if (isset($type->config[self::FUNC_NAME])) {
+            return $type->config[self::FUNC_NAME]($name ?? $type->name);
+        }
 
         return null;
     }

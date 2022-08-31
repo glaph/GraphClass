@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass;
 
 use GraphClass\Config\ConfigCache;
@@ -10,7 +12,7 @@ final class SchemaBuilder {
     /**
      * @throws ConfigException
      */
-    public static function build(SchemaOptions $options): Schema{
+    public static function build(SchemaOptions $options): Schema {
         $cache = new ConfigCache($options);
         return new Schema($cache->config);
     }
@@ -19,7 +21,7 @@ final class SchemaBuilder {
      * @throws ConfigException
      * @throws IOException
      */
-    public static function cacheAndBuild(SchemaOptions $options): Schema{
+    public static function cacheAndBuild(SchemaOptions $options): Schema {
         $cache = new ConfigCache($options);
         $cache->persist();
         return new Schema($cache->config);
@@ -29,17 +31,8 @@ final class SchemaBuilder {
      * @throws ConfigException
      * @throws IOException
      */
-    public static function createCache(SchemaOptions $options): void{
+    public static function createCache(SchemaOptions $options): void {
         $cache = new ConfigCache($options);
         $cache->persist();
     }
 }
-
-
-
-
-
-
-
-
-

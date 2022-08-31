@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type\Connector;
 
 use GraphClass\Type\Connector\Request\Keys;
@@ -41,7 +43,9 @@ final class Connection {
     }
 
     public function hydrateResponseWrappers(): void {
-        if (!isset(self::$instances[$this->class][$this->group])) return;
+        if (!isset(self::$instances[$this->class][$this->group])) {
+            return;
+        }
 
         $map = [];
         foreach ($this->builders as $hash => $builder) {

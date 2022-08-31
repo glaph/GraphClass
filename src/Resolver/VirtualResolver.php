@@ -1,7 +1,8 @@
 <?php
 
-namespace GraphClass\Resolver;
+declare(strict_types=1);
 
+namespace GraphClass\Resolver;
 
 final class VirtualResolver {
     /**
@@ -13,7 +14,7 @@ final class VirtualResolver {
     ) {
     }
 
-    public static function __set_state(array $an_array): self{
+    public static function __set_state(array $an_array): self {
         return new self(
             $an_array["fields"],
             $an_array["method"]

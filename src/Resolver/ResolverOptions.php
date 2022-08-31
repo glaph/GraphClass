@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Resolver;
 
 use GraphClass\Config\ConfigType;
@@ -19,10 +21,14 @@ final class ResolverOptions {
 
     public function getField(string $field = ""): FieldInfo {
         if (!$field) {
-            if (isset($this->field)) return $this->field;
+            if (isset($this->field)) {
+                return $this->field;
+            }
             $field = $this->info->fieldName;
         }
-        if (!$this->hasFieldResolver($field)) throw new \Exception("Method or property $field in class {$this->type->class} must exist");
+        if (!$this->hasFieldResolver($field)) {
+            throw new \Exception("Method or property $field in class {$this->type->class} must exist");
+        }
 
         return $this->field = new FieldInfo(
             name: $field,

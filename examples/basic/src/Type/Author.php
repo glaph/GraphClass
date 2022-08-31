@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Type;
 
 use GraphClass\Type\Attribute\ArrayField;
@@ -12,8 +14,7 @@ class Author extends FieldType {
     #[Field] public string $surname;
     #[ArrayField(Post::class)] public ?array $posts;
 
-    public static function create(...$data): self
-    {
+    public static function create(...$data): self {
         $obj = new self();
         $obj->id = $data["id"];
         $obj->name = $data["name"];
@@ -23,8 +24,7 @@ class Author extends FieldType {
         return $obj;
     }
 
-    public function serialize(): array
-    {
+    public function serialize(): array {
         return [
             "id" => $this->id,
             "name" => $this->name,

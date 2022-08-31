@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Config;
 
 use GraphClass\Config\Exception\ConfigException;
@@ -34,7 +36,9 @@ final class ConfigCache {
     }
 
     private function getFilename(): string {
-        if ($this->options->fileName) return $this->options->fileName;
+        if ($this->options->fileName) {
+            return $this->options->fileName;
+        }
         $schemaFilename = basename($this->options->schemaFilePath, ".gql");
         return "{$this->options->cacheDirPath}/{$schemaFilename}_cache.php";
     }

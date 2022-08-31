@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Config\Trait;
 
 use GraphClass\Resolver\VirtualResolver;
@@ -24,7 +26,7 @@ trait ConfigVirtualsTrait {
             foreach ($method->getAttributes() as $attr) {
                 $instance = $attr->newInstance();
                 if ($instance instanceof Set || $instance instanceof Get) {
-                    $fields = array_map(fn($f) => $this->fields[$f], $instance->fields);
+                    $fields = array_map(fn ($f) => $this->fields[$f], $instance->fields);
                     $virtuals[$instance->name ?? $method->name][$instance::$type->name] = new VirtualResolver($fields, $method->name);
                     $added = true;
                 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Input;
 
 use GraphClass\Utils\ClassArrayShapeTrait;
@@ -10,7 +12,7 @@ abstract class BaseInput implements Input {
     use ClassIteratorTrait;
 
     public static function create(...$data): self {
-        return new static;
+        return new static();
     }
 
     public function serialize(): array {

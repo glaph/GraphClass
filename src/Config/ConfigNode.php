@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Config;
 
 use Exception;
@@ -25,11 +27,19 @@ final class ConfigNode extends Cache {
      * @throws NodeException
      */
     public function add(ReflectionClass $node): void {
-        try{
-            if ($node->isSubclassOf(QueryType::class)) $this->root = ConfigType::create($node);
-            if ($node->implementsInterface(Type::class)) $this->type = ConfigType::create($node);
-            if ($node->implementsInterface(Input::class)) $this->input = ConfigInput::create($node);
-            if ($node->isSubclassOf(ScalarType::class)) $this->scalar = ConfigScalar::create($node);
+        try {
+            if ($node->isSubclassOf(QueryType::class)) {
+                $this->root = ConfigType::create($node);
+            }
+            if ($node->implementsInterface(Type::class)) {
+                $this->type = ConfigType::create($node);
+            }
+            if ($node->implementsInterface(Input::class)) {
+                $this->input = ConfigInput::create($node);
+            }
+            if ($node->isSubclassOf(ScalarType::class)) {
+                $this->scalar = ConfigScalar::create($node);
+            }
         } catch (Exception $e) {
             throw new NodeException("The node $node->name can't be added", previous: $e);
         }

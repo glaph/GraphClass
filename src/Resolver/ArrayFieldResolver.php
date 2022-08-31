@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Resolver;
 
-final class ArrayFieldResolver implements FieldResolver{
+final class ArrayFieldResolver implements FieldResolver {
     public function __construct(
         public string $property,
         public FieldResolver $itemResolver
@@ -17,7 +19,9 @@ final class ArrayFieldResolver implements FieldResolver{
     }
 
     public function resolve($data): ?array {
-        if ($data === null) return null;
+        if ($data === null) {
+            return null;
+        }
         $newData = [];
         foreach ($data as $key => $item) {
             $newData[$key] = $this->itemResolver->resolve($item);

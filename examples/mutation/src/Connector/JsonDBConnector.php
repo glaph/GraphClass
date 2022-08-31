@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Connector;
 
 use GraphClass\Type\Connector\Connector;
@@ -15,7 +17,9 @@ class JsonDBConnector implements Connector {
 
     public function retrieve(Request $request, Response $response): void {
         $data = $this->readJsonFile($request->group);
-        if (!$data) return;
+        if (!$data) {
+            return;
+        }
 
         foreach ($request->keys as $hash => $key) {
             $values = $data;
@@ -27,7 +31,9 @@ class JsonDBConnector implements Connector {
                 }
                 $values = $values[$keyValue];
             }
-            if (!$values) continue;
+            if (!$values) {
+                continue;
+            }
 
             $itemValues = [];
             foreach ($request->fields as $fieldName => $value) {
@@ -38,9 +44,11 @@ class JsonDBConnector implements Connector {
         }
     }
 
-    public function submit(Request $request, Response $response): ?int{
+    public function submit(Request $request, Response $response): ?int {
         $data = $this->readJsonFile($request->group);
-        if (!$data) return null;
+        if (!$data) {
+            return null;
+        }
 
         $keys = $request->keys->values ? $request->keys : ["new" => [$request->keys->names[0] => count($data)]];
         $key = null;
@@ -63,7 +71,9 @@ class JsonDBConnector implements Connector {
     private function readJsonFile(string $name): ?array {
         $jsonPath = "$this->root/db/$name.json";
         $json = file_get_contents($jsonPath);
-        if ($json === false) return null;
+        if ($json === false) {
+            return null;
+        }
 
         return (array) json_decode($json, true, flags: JSON_THROW_ON_ERROR);
     }
@@ -71,11 +81,15 @@ class JsonDBConnector implements Connector {
     private function tryToFindInOtherFile(array &$values, string $fieldName, string $groupName, null|string|int $keyValue): void {
         if (!isset($values[$fieldName]) || $keyValue === null) {
             $data = $this->readJsonFile($fieldName);
-            if (!$data) return;
+            if (!$data) {
+                return;
+            }
 
             $values[$fieldName] = [];
             foreach ($data as $item) {
-                if (!isset($item[$groupName]) || $item[$groupName] !== $keyValue) continue;
+                if (!isset($item[$groupName]) || $item[$groupName] !== $keyValue) {
+                    continue;
+                }
                 $values[$fieldName][] = $item[$groupName];
             }
         }

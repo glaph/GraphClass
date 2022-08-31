@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Resolver;
 
 use Closure;
@@ -32,7 +34,7 @@ final class TypeResolver {
      */
     private function resolveRootField(array $value, $args, $context, ResolveInfo $info) {
         $type = $value[$info->parentType->name];
-        $argsBuilder = (new ArgsBuilder)->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
+        $argsBuilder = (new ArgsBuilder())->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
         $options = new ResolverOptions($this->type, $argsBuilder, $info);
         if ($type instanceof MutationType) {
             $type->mutate($options);
@@ -48,8 +50,10 @@ final class TypeResolver {
      * @throws Exception
      */
     private function resolveField(Type $type, $args, $context, ResolveInfo $info) {
-        if (!($type instanceof $this->type->class)) throw new Exception("Invalid type");
-        $argsBuilder = (new ArgsBuilder)->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
+        if (!($type instanceof $this->type->class)) {
+            throw new Exception("Invalid type");
+        }
+        $argsBuilder = (new ArgsBuilder())->setArgs($args)->setDefs($info->fieldDefinition->args)->build();
 
         return $type->retrieve(new ResolverOptions($this->type, $argsBuilder, $info));
     }

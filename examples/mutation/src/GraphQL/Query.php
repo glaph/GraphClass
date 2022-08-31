@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\GraphQL;
 
 use App\GraphQL\Type\Author;
@@ -20,7 +22,9 @@ class Query extends QueryType {
     }
 
     public function post(Args $args): ?Post {
-        if (!isset($args->id)) return null;
+        if (!isset($args->id)) {
+            return null;
+        }
         return Post::create($args->id);
     }
 
@@ -32,7 +36,9 @@ class Query extends QueryType {
     private function readJsonFile(string $name): ?array {
         $jsonPath = "$this->root/db/$name.json";
         $json = file_get_contents($jsonPath);
-        if ($json === false) return null;
+        if ($json === false) {
+            return null;
+        }
 
         return (array) json_decode($json, true, flags: JSON_THROW_ON_ERROR);
     }

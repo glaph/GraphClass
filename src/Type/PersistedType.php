@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type;
 
 use Exception;
@@ -20,8 +22,10 @@ abstract class PersistedType extends FieldType {
      * @param string[] $keys
      */
     public static function create(...$keys): static {
-        if (self::class === static::class) throw new Exception("Do not try to instantiate an abstract class :)");
-        $obj = new static;
+        if (self::class === static::class) {
+            throw new Exception("Do not try to instantiate an abstract class :)");
+        }
+        $obj = new static();
         $obj->_keyValues = $keys;
         $obj->_hash = implode("-", $keys);
 
@@ -31,7 +35,7 @@ abstract class PersistedType extends FieldType {
     public function retrieve(ResolverOptions $options): Deferred {
         $response = $this->getResponse($options);
 
-        return new Deferred(function() use($options, $response) {
+        return new Deferred(function () use ($options, $response) {
             $response->hydrateType($options->getField(), $this);
             return parent::retrieve($options);
         });
@@ -48,7 +52,9 @@ abstract class PersistedType extends FieldType {
         $properties = [];
 
         foreach ($this as $name => $property) {
-            if (str_starts_with($name, '_')) continue;
+            if (str_starts_with($name, '_')) {
+                continue;
+            }
             $properties[$name] = $property;
         }
         if (count($properties) === count($configType->group->keys)) {
@@ -56,7 +62,9 @@ abstract class PersistedType extends FieldType {
             foreach ($configType->group->keys as $keyName) {
                 $onlyKeys = $onlyKeys && isset($properties[$keyName]);
             }
-            if ($onlyKeys) return $properties[$configType->group->keys[0]];
+            if ($onlyKeys) {
+                return $properties[$configType->group->keys[0]];
+            }
         }
 
         foreach ($properties as $name => $property) {
@@ -81,7 +89,9 @@ abstract class PersistedType extends FieldType {
     }
 
     protected function getResponse(ResolverOptions $options): Response\Wrapper {
-        if (!$options->type->group) throw new Exception("In PersistedType must exist attribute Group");
+        if (!$options->type->group) {
+            throw new Exception("In PersistedType must exist attribute Group");
+        }
         $connection = Connection::getInstance($options->type->group->connectorClass, $options->type->group->name);
 
         $builder = $connection->getBuilder($this);

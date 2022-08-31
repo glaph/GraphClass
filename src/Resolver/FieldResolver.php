@@ -1,8 +1,8 @@
 <?php
 
-namespace GraphClass\Resolver;
+declare(strict_types=1);
 
-use GraphClass\Type\Type;
+namespace GraphClass\Resolver;
 
 interface FieldResolver {
     public function resolve($data): mixed;

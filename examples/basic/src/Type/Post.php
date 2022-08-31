@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Type;
 
 use GraphClass\Type\Attribute\Field;
@@ -11,8 +13,7 @@ class Post extends FieldType {
     #[Field] public ?string $body;
     #[Field] public Author $author;
 
-    public static function create(...$data): self
-    {
+    public static function create(...$data): self {
         $obj = new self();
         $obj->id = $data["id"];
         $obj->title = $data["title"];
@@ -22,8 +23,7 @@ class Post extends FieldType {
         return $obj;
     }
 
-    public function serialize(): array
-    {
+    public function serialize(): array {
         return [
             "id" => $this->id,
             "title" => $this->title,

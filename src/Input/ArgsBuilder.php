@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Input;
 
 use GraphClass\Config\ConfigType;
@@ -13,7 +15,6 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
 
 final class ArgsBuilder {
-
     private array $args = [];
     /** @var FieldArgument[] */
     private array $defs = [];
@@ -56,7 +57,9 @@ final class ArgsBuilder {
         $this->parsed = new Args();
         foreach ($this->defs as $def) {
             $name = $def->name;
-            if (!array_key_exists($name, $this->args)) continue;
+            if (!array_key_exists($name, $this->args)) {
+                continue;
+            }
 
             $type = $def->getType();
             $this->parsed->$name = self::resolve($type, $this->args[$name], $this->getResolver($type, $name));
@@ -66,10 +69,14 @@ final class ArgsBuilder {
     }
 
     private function getResolver(Type $type, string $name): ?FieldResolver {
-        if ($type instanceof NonNull) $type = $type->getOfType();
+        if ($type instanceof NonNull) {
+            $type = $type->getOfType();
+        }
         if ($type instanceof InputObjectType) {
             $configInput = ConfigFinder::input($type);
-            if ($configInput) return new ClassFieldResolver($name, $configInput->class);
+            if ($configInput) {
+                return new ClassFieldResolver($name, $configInput->class);
+            }
         }
 
         return null;
@@ -77,10 +84,14 @@ final class ArgsBuilder {
 
     private function resolve(Type $type, mixed $args, ?FieldResolver $resolver): mixed {
         $ret = $resolver ? $resolver->resolve($args) : $args;
-        if ($type instanceof NonNull) $type = $type->getOfType();
+        if ($type instanceof NonNull) {
+            $type = $type->getOfType();
+        }
         if ($ret instanceof Resolvable && $type instanceof InputObjectType) {
             $configInput = ConfigFinder::input($type);
-            if (!$configInput) return $ret;
+            if (!$configInput) {
+                return $ret;
+            }
             foreach ($args as $propertyName => $value) {
                 $ret->$propertyName = self::resolve($type->getField($propertyName)->getType(), $value, $configInput->fields[$propertyName]);
             }

@@ -9,7 +9,7 @@ return (new Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR12' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'declare_strict_types' => true,
+        'braces' => ['position_after_functions_and_oop_constructs' => 'same']
     ])
     ->setFinder($finder);

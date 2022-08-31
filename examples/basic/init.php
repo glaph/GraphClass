@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Query;
 use GraphClass\SchemaBuilder;
 use GraphClass\SchemaOptions;
 use GraphClass\SchemaRequest;
 
-require ("vendor/autoload.php");
+require("vendor/autoload.php");
 
 $root = __DIR__;
 $schema = SchemaBuilder::build(new SchemaOptions(

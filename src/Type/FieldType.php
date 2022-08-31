@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type;
 
 use GraphClass\Resolver\ResolverOptions;
@@ -22,8 +24,7 @@ abstract class FieldType implements Type {
         throw new \Exception("Any implementation for {$field->name}");
     }
 
-    public function persist(ResolverOptions $options): mixed
-    {
+    public function persist(ResolverOptions $options): mixed {
         return $this->serialize();
     }
 

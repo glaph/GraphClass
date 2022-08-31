@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type\Attribute;
 
 use Attribute;
@@ -17,7 +19,7 @@ final class Group {
     ) {
     }
 
-    public static function __set_state(array $an_array): self{
+    public static function __set_state(array $an_array): self {
         return new self(
             $an_array["name"],
             $an_array["connectorClass"],

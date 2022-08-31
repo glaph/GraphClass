@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GraphClass\Type;
 
 use GraphClass\Config\ConfigType;
 use GraphClass\Input\Input;
 use GraphClass\Resolver\ResolverOptions;
-use GraphClass\Type\Connector\Response\Keys;
 
 abstract class MutationType extends QueryType {
     public function mutate(ResolverOptions $options): void {
@@ -16,7 +17,7 @@ abstract class MutationType extends QueryType {
         }
 
         foreach ($args as $input) {
-            if($options->args->hasMutator($input::class)) {
+            if ($options->args->hasMutator($input::class)) {
                 $this->persist($input, $this->createType($input, $options), $options);
             }
         }
