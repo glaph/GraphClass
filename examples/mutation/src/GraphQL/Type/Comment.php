@@ -11,8 +11,8 @@ use GraphClass\Type\PersistedType;
 
 #[Group('comment', JsonDBConnector::class, ["id"])]
 class Comment extends PersistedType {
-    #[Field] public int $id;
-    #[Field] public string $username;
-    #[Field] public string $text;
-    #[Field] public Post $post;
+	#[Field] public int $id;
+	#[Field] public string $username;
+	#[Field] public string $text;
+	#[Field] public Post $post;
 }

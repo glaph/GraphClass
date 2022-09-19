@@ -7,6 +7,6 @@ namespace GraphClass\Type;
 use GraphClass\Resolver\ResolverOptions;
 
 abstract class SubscriptionType extends QueryType {
-    public function subscribe(ResolverOptions $options): void {
-    }
+	public function subscribe(ResolverOptions $options): void {
+	}
 }

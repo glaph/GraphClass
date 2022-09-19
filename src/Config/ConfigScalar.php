@@ -13,21 +13,21 @@ use ReflectionClass;
 use ReflectionException;
 
 final class ConfigScalar extends Cache {
-    use SecureAssignationTrait;
+	use SecureAssignationTrait;
 
-    public readonly string $class;
+	public readonly string $class;
 
-    public static function __set_state(array $an_array): self {
-        $obj = new self();
-        $obj->secureAssignation($an_array, "class");
+	public static function __set_state(array $an_array): self {
+		$obj = new self();
+		$obj->secureAssignation($an_array, "class");
 
-        return $obj;
-    }
+		return $obj;
+	}
 
-    public static function create(ReflectionClass $class): self {
-        $obj = new self();
-        $obj->class = $class->name;
+	public static function create(ReflectionClass $class): self {
+		$obj = new self();
+		$obj->class = $class->name;
 
-        return $obj;
-    }
+		return $obj;
+	}
 }

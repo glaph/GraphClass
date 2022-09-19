@@ -7,28 +7,28 @@ namespace GraphClass\Type;
 use GraphClass\Resolver\ResolverOptions;
 
 abstract class QueryType {
-    public function retrieve(ResolverOptions $options): mixed {
-        $field = $options->getField();
-        if ($method = $field->get?->method) {
-            return $this->$method($options->args->getParsed());
-        }
+	public function retrieve(ResolverOptions $options): mixed {
+		$field = $options->getField();
+		if ($method = $field->get?->method) {
+			return $this->$method($options->args->getParsed());
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public function offsetExists(mixed $offset): bool {
-        return isset($this->$offset);
-    }
+	public function offsetExists(mixed $offset): bool {
+		return isset($this->$offset);
+	}
 
-    public function offsetGet(mixed $offset): mixed {
-        return $this->$offset ?? null;
-    }
+	public function offsetGet(mixed $offset): mixed {
+		return $this->$offset ?? null;
+	}
 
-    public function offsetSet(mixed $offset, mixed $value): void {
-        $this->$offset = $value;
-    }
+	public function offsetSet(mixed $offset, mixed $value): void {
+		$this->$offset = $value;
+	}
 
-    public function offsetUnset(mixed $offset): void {
-        unset($this->$offset);
-    }
+	public function offsetUnset(mixed $offset): void {
+		unset($this->$offset);
+	}
 }

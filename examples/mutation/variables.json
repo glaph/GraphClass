@@ -1,20 +1,20 @@
 {
-  "new": {
-    "username": "NewUser",
-    "post": {
-      "title": "New post",
-      "body": "New text",
-      "author": {
-        "id": 2
-      }
-    },
-    "text": "new text"
-  },
-  "update": {
-    "id": 0,
-    "username": "NewUser",
-    "post": {
-      "id": 2
-    }
-  }
+	"new": {
+		"username": "NewUser",
+		"post": {
+			"title": "New post",
+			"body": "New text",
+			"author": {
+				"id": 2
+			}
+		},
+		"text": "new text"
+	},
+	"update": {
+		"id": 0,
+		"username": "NewUser",
+		"post": {
+			"id": 2
+		}
+	}
 }

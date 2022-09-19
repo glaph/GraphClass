@@ -11,8 +11,8 @@ require("vendor/autoload.php");
 
 $root = __DIR__;
 $schema = SchemaBuilder::build(new SchemaOptions(
-    schemaFilePath: "$root/schema.gql",
-    root: new Query()
+	schemaFilePath: "$root/schema.gql",
+	root: new Query()
 ));
 
 //$query = file_get_contents("$root/query");
@@ -25,8 +25,8 @@ $vars = file_get_contents("$root/variables.json");
 
 
 $response = $schema(new SchemaRequest(
-    query: $mutation ?: "",
-    variables: json_decode($vars ?: "{}", true, flags: JSON_THROW_ON_ERROR)
+	query: $mutation ?: "",
+	variables: json_decode($vars ?: "{}", true, flags: JSON_THROW_ON_ERROR)
 ));
 
 echo json_encode($response);

@@ -11,8 +11,8 @@ use GraphClass\Type\Attribute\Mutator;
 
 #[Mutator(Type\Post::class)]
 class IPost extends BaseInput {
-    #[Field] public int $id;
-    #[Field] public string $title;
-    #[Field] public ?string $body;
-    #[Field] public IAuthor $author;
+	#[Field] public int $id;
+	#[Field] public string $title;
+	#[Field] public ?string $body;
+	#[Field] public IAuthor $author;
 }

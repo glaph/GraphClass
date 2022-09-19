@@ -8,12 +8,12 @@ use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 final class Set {
-    public static VirtualType $type = VirtualType::Set;
+	public static VirtualType $type = VirtualType::Set;
 
-    public array $fields = [];
+	public array $fields = [];
 
-    public function __construct(
-        public ?string $name = null
-    ) {
-    }
+	public function __construct(
+		public ?string $name = null
+	) {
+	}
 }

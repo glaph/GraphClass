@@ -11,7 +11,7 @@ use GraphClass\Type\Attribute\Mutator;
 
 #[Mutator(Type\Author::class)]
 class IAuthor extends BaseInput {
-    #[Field] public int $id;
-    #[Field] public string $name;
-    #[Field] public string $surname;
+	#[Field] public int $id;
+	#[Field] public string $name;
+	#[Field] public string $surname;
 }

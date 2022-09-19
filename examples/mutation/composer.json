@@ -1,19 +1,19 @@
 {
-    "name": "graph-class/connector",
-    "type": "project",
-    "require": {
-        "php": "^8.1",
-        "glaph/graphclass": "^0.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/glaph/GraphClass.git"
-        }
-    ]
+	"name": "graph-class/mutation",
+	"type": "project",
+	"require": {
+		"php": "^8.1",
+		"glaph/graphclass": "^0.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "src/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/glaph/GraphClass.git"
+		}
+	]
 }

@@ -2,24 +2,24 @@ scalar Int
 scalar String
 
 schema {
-  query: Query
+	query: Query
 }
 
 type Query {
-  lastPost: Post
-  allAuthors: [Author]
+	lastPost: Post
+	allAuthors: [Author]
 }
 
 type Post {
-  id: Int!
-  title: String!
-  body: String
-  author: Author!
+	id: Int!
+	title: String!
+	body: String
+	author: Author!
 }
 
 type Author {
-  id: Int!
-  name: String!
-  surname: String!
-  posts: [Post]
+	id: Int!
+	name: String!
+	surname: String!
+	posts: [Post]
 }

@@ -11,13 +11,13 @@ require("vendor/autoload.php");
 
 $root = __DIR__;
 $schema = SchemaBuilder::build(new SchemaOptions(
-    schemaFilePath: "$root/schema.gql",
-    root: new Query()
+	schemaFilePath: "$root/schema.gql",
+	root: new Query()
 ));
 
 $query = file_get_contents("$root/query");
 $response = $schema(new SchemaRequest(
-    query: $query ?: ""
+	query: $query ?: ""
 ));
 
 echo json_encode($response);

@@ -1,10 +1,10 @@
 scalar String
 
 schema {
-  query: Query
+	query: Query
 }
 
 type Query {
-  helloWorld: String
-  hello(name: String): String
+	helloWorld: String
+	hello(name: String): String
 }

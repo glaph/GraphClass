@@ -13,37 +13,37 @@ use GraphClass\Type\PersistedType;
 use GraphClass\Type\Type;
 
 final class Wrapper {
-    public Request $request;
-    public Response $response;
+	public Request $request;
+	public Response $response;
 
-    public function __construct(
-        private readonly Connection $connection,
-        private readonly Connector $connector
-    ) {
-    }
+	public function __construct(
+		private readonly Connection $connection,
+		private readonly Connector $connector
+	) {
+	}
 
-    public function hydrateType(FieldInfo $field, PersistedType &$type): void {
-        $this->hydrateResponse();
+	public function hydrateType(FieldInfo $field, PersistedType &$type): void {
+		$this->hydrateResponse();
 
-        foreach ($field->getFieldResolvers() as $resolver) {
-            $fieldName = $resolver->property;
-            if (!isset($type->$fieldName) && isset($this->response->items[$type->getHash()]->values[$fieldName])) {
-                $type->$fieldName = $resolver->resolve($this->response->items[$type->getHash()]->values[$fieldName]);
-            }
-        }
-    }
+		foreach ($field->getFieldResolvers() as $resolver) {
+			$fieldName = $resolver->property;
+			if (!isset($type->$fieldName) && isset($this->response->items[$type->getHash()]->values[$fieldName])) {
+				$type->$fieldName = $resolver->resolve($this->response->items[$type->getHash()]->values[$fieldName]);
+			}
+		}
+	}
 
-    public function submit(): int|string|null {
-        $this->connection->hydrateResponseWrappers();
+	public function submit(): int|string|null {
+		$this->connection->hydrateResponseWrappers();
 
-        return $this->connector->submit($this->request, $this->response);
-    }
+		return $this->connector->submit($this->request, $this->response);
+	}
 
-    private function hydrateResponse(): void {
-        $this->connection->hydrateResponseWrappers();
+	private function hydrateResponse(): void {
+		$this->connection->hydrateResponseWrappers();
 
-        if (!$this->response->items) {
-            $this->connector->retrieve($this->request, $this->response);
-        }
-    }
+		if (!$this->response->items) {
+			$this->connector->retrieve($this->request, $this->response);
+		}
+	}
 }
