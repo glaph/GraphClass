@@ -1,0 +1,86 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Class GraphClass\\\\Config\\\\Config has an uninitialized readonly property \\$document\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/Config.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\Config has an uninitialized readonly property \\$nodes\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/Config.php
+
+		-
+			message: "#^Readonly property GraphClass\\\\Config\\\\ConfigCache\\:\\:\\$config is already assigned\\.$#"
+			count: 1
+			path: src/Config/ConfigCache.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigInput has an uninitialized readonly property \\$class\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigInput.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigInput has an uninitialized readonly property \\$fields\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigInput.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigInput has an uninitialized readonly property \\$mutator\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigInput.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigInput has an uninitialized readonly property \\$virtuals\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigInput.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigNode has an uninitialized readonly property \\$input\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigNode.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigNode has an uninitialized readonly property \\$name\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigNode.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigNode has an uninitialized readonly property \\$root\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigNode.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigNode has an uninitialized readonly property \\$scalar\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigNode.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigNode has an uninitialized readonly property \\$type\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigNode.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigScalar has an uninitialized readonly property \\$class\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigScalar.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigType has an uninitialized readonly property \\$class\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigType.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigType has an uninitialized readonly property \\$fields\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigType.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigType has an uninitialized readonly property \\$group\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigType.php
+
+		-
+			message: "#^Class GraphClass\\\\Config\\\\ConfigType has an uninitialized readonly property \\$virtuals\\. Assign it in the constructor\\.$#"
+			count: 1
+			path: src/Config/ConfigType.php
