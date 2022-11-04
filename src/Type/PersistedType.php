@@ -14,7 +14,6 @@ use GraphClass\Utils\ConfigFinder;
 use GraphQL\Deferred;
 
 abstract class PersistedType extends FieldType {
-
 	public function retrieve(ResolverOptions $options): Deferred {
 		$response = $this->getResponse($options);
 

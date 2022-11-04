@@ -18,6 +18,6 @@ class Comment extends PersistedType {
 
 	public function __construct(
 		#[Id] public int $id
-	){
+	) {
 	}
 }
