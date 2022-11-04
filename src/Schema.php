@@ -81,12 +81,12 @@ final class Schema {
 			if (!isset($configNode->root)) {
 				throw new \Exception("Class implementation for root type $configNode->name does not exist");
 			}
-			$typeConfig["resolveField"] = TypeResolver::getRootResolver($configNode->root);
+			$typeConfig["resolveField"] = TypeResolver::getRootResolver();
 		} else {
 			if (!isset($configNode->type)) {
 				throw new \Exception("Class implementation for type $configNode->name does not exist");
 			}
-			$typeConfig["resolveField"] = TypeResolver::getTypeResolver($configNode->type);
+			$typeConfig["resolveField"] = TypeResolver::getTypeResolver();
 		}
 
 		return $typeConfig;
@@ -107,7 +107,7 @@ final class Schema {
 
 	private function configScalar(ConfigNode $configNode, Config $config): array {
 		if (!isset($configNode->scalar)) {
-			throw new \Exception("Class implementation for input $configNode->name does not exist");
+			throw new \Exception("Class implementation for scalar $configNode->name does not exist");
 		}
 
 		return [];

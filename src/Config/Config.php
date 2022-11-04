@@ -44,7 +44,9 @@ final class Config extends Cache {
 
 			$obj = new self();
 			$obj->document = ConfigFileManager::loadDocumentNode($options->schemaFilePath);
-			$obj->nodes = self::loadTypeNodes($options->root);
+			$nodes = [];
+			self::loadTypeNodes($options->root, $nodes);
+			$obj->nodes = $nodes;
 
 			return $obj;
 		} catch (Exception $e) {
@@ -53,17 +55,17 @@ final class Config extends Cache {
 	}
 
 	/**
-	 * @return ConfigNode[]
+	 * @param ConfigNode[] $nodes
 	 * @throws ConfigException
 	 */
-	private static function loadTypeNodes(QueryType $root): array {
+	private static function loadTypeNodes(QueryType $root, array &$nodes): void {
 		$query = new ReflectionClass($root);
-		$nodes = [];
 
 		try {
 			foreach (ConfigFileManager::loadTypes(dirname($query->getFileName()), $query->getNamespaceName()) as $nodeClass) {
 				$nodeRef = new ReflectionClass($nodeClass);
 				$nodeName = $nodeRef->getShortName();
+				self::setExplorerFunc($nodeRef, $nodes);
 
 				if (isset($nodes[$nodeName])) {
 					$nodes[$nodeName]->add($nodeRef);
@@ -74,7 +76,20 @@ final class Config extends Cache {
 		} catch (Exception $e) {
 			throw new ConfigException("The config nodes couldn't be created", previous: $e);
 		}
+	}
 
-		return $nodes;
+	/**
+	 * @param ConfigNode[] $nodes
+	 */
+	private static function setExplorerFunc(ReflectionClass $nodeRef, array &$nodes): void {
+		$nodeRef->setStaticPropertyValue("_explorer", function (string $class) use (&$nodes) {
+			$explode = explode("\\", $class);
+			$className = array_pop($explode);
+			if (!isset($nodes[$className])) {
+				throw new Exception("Class $class can't be found in preloaded types");
+			}
+
+			return $nodes[$className];
+		});
 	}
 }

@@ -6,14 +6,12 @@ namespace GraphClass\Input;
 
 use GraphClass\Utils\ClassArrayShapeTrait;
 use GraphClass\Utils\ClassIteratorTrait;
+use GraphClass\Utils\ResolvableTrait;
 
 abstract class BaseInput implements Input {
 	use ClassArrayShapeTrait;
 	use ClassIteratorTrait;
-
-	public static function create(...$data): self {
-		return new static();
-	}
+	use ResolvableTrait;
 
 	public function serialize(): array {
 		return [];

@@ -47,18 +47,16 @@ abstract class MutationType extends QueryType {
 
 	private function instanceType(Input $input, ConfigType $configType): Type {
 		$keys = [];
-		if ($configType->group?->keys) {
-			foreach ($configType->group->keys as $key) {
-				if (!isset($input->$key)) {
-					$keys = [];
-					break;
-				}
-
-				$keys[$key] = $input->$key;
+		foreach ($configType->ids as $name => $resolver) {
+			if (!isset($input->$name)) {
+				$keys = [];
+				break;
 			}
+
+			$keys[$resolver->getProperty()] = $resolver->resolve($input->$name);
 		}
 
-		return $keys ? $configType->class::create(...$keys) : new ($configType->class);
+		return $keys ? new $configType->class(...$keys) : (new \ReflectionClass($configType->class))->newInstanceWithoutConstructor();
 	}
 
 	private function getValue(mixed $value, ResolverOptions $options): mixed {
@@ -72,9 +70,8 @@ abstract class MutationType extends QueryType {
 	private function persist(Input $input, Type $type, ResolverOptions $options): void {
 		$key = $type->persist($options);
 		$configType = $options->args->getMutator($input::class);
-		if ($configType->group) {
-			$keyName = $configType->group->keys[0];
-			$input->$keyName = $key;
+		foreach ($configType->ids as $name => $resolver) {
+			$input->$name = $key;
 		}
 	}
 

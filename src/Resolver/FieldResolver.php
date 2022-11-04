@@ -6,4 +6,5 @@ namespace GraphClass\Resolver;
 
 interface FieldResolver {
 	public function resolve($data): mixed;
+	public function getProperty(): string;
 }

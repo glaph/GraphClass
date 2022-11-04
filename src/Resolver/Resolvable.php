@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace GraphClass\Resolver;
 
+use GraphClass\Config\ConfigNode;
+
 interface Resolvable {
-	public static function create(...$data): self;
 	public function serialize(): array;
+	public static function getConfig(): ConfigNode;
 }

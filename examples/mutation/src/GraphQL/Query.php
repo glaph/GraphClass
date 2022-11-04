@@ -18,19 +18,19 @@ class Query extends QueryType {
 	public function lastPost(): ?Post {
 		$data = $this->readJsonFile('post');
 		$item = array_pop($data);
-		return isset($item['id']) ? Post::create($item['id']) : null;
+		return isset($item['id']) ? new Post($item['id']) : null;
 	}
 
 	public function post(Args $args): ?Post {
 		if (!isset($args->id)) {
 			return null;
 		}
-		return Post::create($args->id);
+		return new Post($args->id);
 	}
 
 	public function allAuthors(): array {
 		$data = $this->readJsonFile('author');
-		return array_map(fn ($v) => Author::create($v['id']), $data);
+		return array_map(fn ($v) => new Author($v['id']), $data);
 	}
 
 	private function readJsonFile(string $name): ?array {

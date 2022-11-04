@@ -14,8 +14,7 @@ final class Group {
 	 */
 	public function __construct(
 		public string $name,
-		public string $connectorClass,
-		public array $keys
+		public string $connectorClass
 	) {
 	}
 

@@ -75,7 +75,7 @@ final class ArgsBuilder {
 		if ($type instanceof InputObjectType) {
 			$configInput = ConfigFinder::input($type);
 			if ($configInput) {
-				return new ClassFieldResolver($name, $configInput->class);
+				return new ClassFieldResolver($name, $configInput->class, []);
 			}
 		}
 

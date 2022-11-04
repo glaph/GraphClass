@@ -23,35 +23,35 @@ class Query extends QueryType {
 	}
 
 	private function createSomeInfo(): array {
-		$author0 = Author::create(
+		$author0 = new Author(
 			id: 0,
 			name: "Pavo",
 			surname: "Vilar"
 		);
-		$author1 = Author::create(
+		$author1 = new Author(
 			id: 1,
 			name: "David",
 			surname: "Lopez"
 		);
-		$author2 = Author::create(
+		$author2 = new Author(
 			id: 1,
 			name: "Don",
 			surname: "Nacho"
 		);
 
-		$post0 = Post::create(
+		$post0 = new Post(
 			id: 0,
 			title: "Introduction",
-			body: "Some text",
-			author: $author0
+			author: $author0,
+			body: "Some text"
 		);
-		$post1 = Post::create(
+		$post1 = new Post(
 			id: 1,
 			title: "Hello world",
-			body: "Hello world",
-			author: $author1
+			author: $author1,
+			body: "Hello world"
 		);
-		$post2 = Post::create(
+		$post2 = new Post(
 			id: 2,
 			title: "Advanced",
 			author: $author1

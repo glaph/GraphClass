@@ -27,7 +27,15 @@ final class Connection {
 	public function getBuilder(Type $type): Request\Builder {
 		$hash = $type->getHash();
 		if (!isset($this->builders[$hash])) {
-			$this->builders[$hash] = new Request\Builder();
+			$ids = [];
+			foreach ($type::getConfig()->type->ids as $name => $resolver) {
+				if (!isset($type->$name)) {
+					$ids = [];
+					break;
+				}
+				$ids[$name] = $type->$name;
+			}
+			$this->builders[$hash] = new Request\Builder($ids);
 		}
 
 		return $this->builders[$hash];
@@ -53,21 +61,18 @@ final class Connection {
 			$response = null;
 			foreach ($map as $values) {
 				if ($values[0]->fields == $builder->fields) {
-					$request = $values[0];
-					$response = $values[1];
+					list($request, $response) = $values;
 					break;
 				}
 			}
 
 			if (!$request) {
-				$request = new Request($builder->fields, $this->group, new Keys($builder->keys));
+				$request = new Request($builder->fields, $this->group);
 				$response = new Response();
 				$map[$hash] = [$request, $response];
 			}
 
-			if ($hash !== "new") {
-				$request->keys->addValues($builder->keyValues);
-			}
+			$request->keys->add($hash, $builder->ids);
 			$this->responses[$hash]->request = $request;
 			$this->responses[$hash]->response = $response;
 		}

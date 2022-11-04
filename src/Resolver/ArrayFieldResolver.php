@@ -11,13 +11,6 @@ final class ArrayFieldResolver implements FieldResolver {
 	) {
 	}
 
-	public static function __set_state(array $an_array): self {
-		return new self(
-			$an_array["property"],
-			$an_array["type"]
-		);
-	}
-
 	public function resolve($data): ?array {
 		if ($data === null) {
 			return null;
@@ -28,5 +21,16 @@ final class ArrayFieldResolver implements FieldResolver {
 		}
 
 		return $newData;
+	}
+
+	public function getProperty(): string {
+		return $this->property;
+	}
+
+	public static function __set_state(array $an_array): self {
+		return new self(
+			$an_array["property"],
+			$an_array["type"]
+		);
 	}
 }

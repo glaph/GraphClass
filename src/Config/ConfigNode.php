@@ -9,8 +9,8 @@ use GraphClass\Config\Exception\NodeException;
 use GraphClass\Config\Trait\SecureAssignationTrait;
 use GraphClass\Input\Input;
 use GraphClass\Type\QueryType;
+use GraphClass\Type\Scalar;
 use GraphClass\Type\Type;
-use GraphQL\Type\Definition\ScalarType;
 use ReflectionClass;
 use ReflectionException;
 
@@ -37,7 +37,7 @@ final class ConfigNode extends Cache {
 			if ($node->implementsInterface(Input::class)) {
 				$this->input = ConfigInput::create($node);
 			}
-			if ($node->isSubclassOf(ScalarType::class)) {
+			if ($node->isSubclassOf(Scalar::class)) {
 				$this->scalar = ConfigScalar::create($node);
 			}
 		} catch (Exception $e) {

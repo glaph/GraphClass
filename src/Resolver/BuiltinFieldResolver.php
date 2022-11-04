@@ -13,13 +13,6 @@ final class BuiltinFieldResolver implements FieldResolver {
 	) {
 	}
 
-	public static function __set_state(array $an_array): self {
-		return new self(
-			$an_array["property"],
-			$an_array["type"]
-		);
-	}
-
 	public function resolve($data): mixed {
 		if ($data === null) {
 			return null;
@@ -30,5 +23,16 @@ final class BuiltinFieldResolver implements FieldResolver {
 		}
 
 		return $data;
+	}
+
+	public function getProperty(): string {
+		return $this->property;
+	}
+
+	public static function __set_state(array $an_array): self {
+		return new self(
+			$an_array["property"],
+			$an_array["type"]
+		);
 	}
 }
