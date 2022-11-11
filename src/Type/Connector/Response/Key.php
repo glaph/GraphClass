@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GraphClass\Type\Connector\Response;
 
-final class Keys implements \IteratorAggregate {
+final class Key implements \IteratorAggregate {
 	private array $keys = [];
 
 	public function addKey(string $name, mixed $value): self {

@@ -6,12 +6,10 @@ namespace GraphClass\Type;
 
 use GraphClass\Resolver\ResolverOptions;
 use GraphClass\Utils\ClassArrayShapeTrait;
-use GraphClass\Utils\ClassIteratorTrait;
 use GraphClass\Utils\ResolvableTrait;
 
 abstract class FieldType implements Type {
 	use ClassArrayShapeTrait;
-	use ClassIteratorTrait;
 	use ResolvableTrait;
 
 	public function retrieve(ResolverOptions $options): mixed {

@@ -22,7 +22,12 @@ trait ClassArrayShapeTrait {
 	}
 
 	public function count(): int {
-		$privates = isset($this->_vars) ? 3 : 0;
-		return count(get_object_vars($this)) - $privates;
+		$count = 0;
+		foreach ($this as $name => $value) {
+			if (!str_starts_with($name, "_")) {
+				$count++;
+			}
+		}
+		return $count;
 	}
 }

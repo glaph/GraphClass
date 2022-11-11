@@ -22,7 +22,7 @@ final class Wrapper {
 	) {
 	}
 
-	public function hydrateType(FieldInfo $field, PersistedType &$type): void {
+	public function hydrateType(FieldInfo $field, PersistedType $type): void {
 		$this->hydrateResponse();
 
 		foreach ($field->getFieldResolvers() as $resolver) {
@@ -33,7 +33,7 @@ final class Wrapper {
 		}
 	}
 
-	public function submit(): int|string|null {
+	public function submit(): ?Key {
 		$this->connection->hydrateResponseWrappers();
 
 		return $this->connector->submit($this->request, $this->response);

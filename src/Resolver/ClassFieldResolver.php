@@ -28,7 +28,11 @@ final class ClassFieldResolver implements FieldResolver {
 		$newData = is_array($data) ? $data : [$data];
 		$newData = array_intersect_key($newData, $this->constructParams);
 
-		return new ($this->class)(...$newData);
+		if (count($newData) === count($this->constructParams)) {
+			return new ($this->class)(...$newData);
+		}
+
+		return (new \ReflectionClass($this->class))->newInstanceWithoutConstructor();
 	}
 
 	public function getProperty(): string {

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace GraphClass\Type;
 
 use Exception;
+use GraphClass\Config\ConfigType;
 use GraphClass\Resolver\BuiltinFieldResolver;
 use GraphClass\Resolver\FieldInfo;
 use GraphClass\Resolver\ResolverOptions;
+use GraphClass\Resolver\TypeResolver;
 use GraphClass\Type\Connector\Connection;
 use GraphClass\Type\Connector\Response;
-use GraphClass\Utils\ConfigFinder;
 use GraphQL\Deferred;
 
 abstract class PersistedType extends FieldType {
@@ -23,42 +24,40 @@ abstract class PersistedType extends FieldType {
 		});
 	}
 
-	public function persist(ResolverOptions $options): mixed {
-		$class = explode("\\", static::class);
-		$className = array_pop($class);
-		$configType = ConfigFinder::type($options->info->parentType, $className);
+	public function persist(ResolverOptions $options): self {
+		/** @var ConfigType $configType */
+		$configType = static::getConfig()->type;
 		$connection = Connection::getInstance($configType->group->connectorClass, $configType->group->name);
 		$builder = $connection->getBuilder($this);
-		$properties = [];
+		$count = 0;
 
+		$onlyKeys = true;
 		foreach ($this as $name => $property) {
 			if (str_starts_with($name, '_')) {
 				continue;
 			}
-			$properties[$name] = $property;
-		}
-		if (count($properties) === count($configType->ids)) {
-			$onlyKeys = true;
-			$idName = '';
-			foreach ($configType->ids as $idName => $resolver) {
-				$onlyKeys = $onlyKeys && isset($properties[$idName]);
-			}
-			if ($onlyKeys) {
-				return $properties[$idName];
-			}
-		}
-
-		foreach ($properties as $name => $property) {
+			$count++;
+			$onlyKeys = $onlyKeys && isset($configType->ids[$name]);
 			if ($property instanceof Type) {
 				$property = $property->persist($options);
+				if ($property instanceof Type) {
+					continue;
+				}
 			}
-
 			$builder->addField(new FieldInfo($name, new BuiltinFieldResolver($name, '')), $property);
 		}
 
-		$response = $connection->getResponse($this);
+		if ($onlyKeys && count($configType->ids) === $count) {
+			return $this;
+		}
 
-		return $response->submit();
+		$key = $connection->getResponse($this)->submit();
+
+		foreach ($key as $name => $value) {
+			$this->$name = TypeResolver::getField($configType, $name)->field->resolve($value);
+		}
+
+		return $this;
 	}
 
 	public function serialize(): array {

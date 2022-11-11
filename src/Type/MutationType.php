@@ -7,39 +7,45 @@ namespace GraphClass\Type;
 use GraphClass\Config\ConfigType;
 use GraphClass\Input\Input;
 use GraphClass\Resolver\ResolverOptions;
+use GraphClass\Resolver\TypeResolver;
 
 abstract class MutationType extends QueryType {
 	public function mutate(ResolverOptions $options): void {
 		$args = $options->args->getParsed();
-		if ($method = $options->getField()->set?->method) {
+		if ($method = $options->field->set?->method) {
 			$this->$method($args);
 			return;
 		}
 
 		foreach ($args as $input) {
-			if ($options->args->hasMutator($input::class)) {
-				$this->persist($input, $this->createType($input, $options), $options);
+			if ($type = $this->createType($input)) {
+				$this->persist($input, $type, $options);
 			}
 		}
-
-		$args->clearIterator();
 	}
 
-	private function createType(Input $input, ResolverOptions $options): Type {
-		$configType = $options->args->getMutator($input::class);
+	private function createType(Input $input): ?Type {
+		$configType = $input::getMutatorConfig();
+		if (!$configType) {
+			return null;
+		}
 		$type = $this->instanceType($input, $configType);
-		$resolver = new ResolverOptions($configType, $options->args, $options->info);
 
 		foreach ($input as $name => $value) {
-			$field = $resolver->getField($name);
+			$field = TypeResolver::getField($configType, $name);
 			if ($method = $field->set?->method) {
-				$tmpType = new ($configType->class);
-				$tmpType->$method($value);
-				$this->extractProperties($type, $tmpType);
+				$type->$method($value);
 				continue;
 			}
 
-			$type->$name = $this->getValue($value, $options);
+			if ($value instanceof Input && $childType = $this->createType($value)) {
+				$type->$name = $childType;
+				continue;
+			}
+
+			if ($fieldResolver = $field->field) {
+				$type->$name = $fieldResolver->resolve($value);
+			}
 		}
 
 		return $type;
@@ -59,26 +65,11 @@ abstract class MutationType extends QueryType {
 		return $keys ? new $configType->class(...$keys) : (new \ReflectionClass($configType->class))->newInstanceWithoutConstructor();
 	}
 
-	private function getValue(mixed $value, ResolverOptions $options): mixed {
-		if ($value instanceof Input) {
-			return $this->createType($value, $options);
-		}
-
-		return $value;
-	}
-
 	private function persist(Input $input, Type $type, ResolverOptions $options): void {
-		$key = $type->persist($options);
-		$configType = $options->args->getMutator($input::class);
+		$type->persist($options);
+		$configType = $type::getConfig()->type;
 		foreach ($configType->ids as $name => $resolver) {
-			$input->$name = $key;
-		}
-	}
-
-	private function extractProperties(Type $type, Type $tempType): void {
-		$vars = get_object_vars($tempType);
-		foreach ($vars as $name => $value) {
-			$type->$name = $value;
+			$input->$name = $type->$name;
 		}
 	}
 }

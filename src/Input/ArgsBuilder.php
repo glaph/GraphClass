@@ -18,7 +18,6 @@ final class ArgsBuilder {
 	private array $args = [];
 	/** @var FieldArgument[] */
 	private array $defs = [];
-	private array $mutators = [];
 	private Args $parsed;
 
 	public function setArgs(array $args): self {
@@ -32,21 +31,6 @@ final class ArgsBuilder {
 	public function setDefs(array $defs): self {
 		$this->defs = $defs;
 		return $this;
-	}
-
-	/**
-	 * @param class-string<Input> $class
-	 */
-	public function hasMutator(string $class): bool {
-		return isset($this->mutators[$class]);
-	}
-
-
-	/**
-	 * @param class-string<Input> $class
-	 */
-	public function getMutator(string $class): ConfigType {
-		return $this->mutators[$class];
 	}
 
 	public function getParsed(): Args {
@@ -95,8 +79,6 @@ final class ArgsBuilder {
 			foreach ($args as $propertyName => $value) {
 				$ret->$propertyName = self::resolve($type->getField($propertyName)->getType(), $value, $configInput->fields[$propertyName]);
 			}
-
-			$this->mutators[$configInput->class] = ConfigFinder::type($type, $configInput->mutator ?? null);
 		}
 
 		return $ret;
