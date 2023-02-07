@@ -97,7 +97,7 @@ trait ConfigFieldTrait {
 			throw new FieldException("If a property with #[Field] Attribute is a class, must implement Resolvable");
 		}
 
-		return ClassFieldResolver::createFromProperty($property);
+		return ClassFieldResolver::createFromClassAndName($property->getType()->getName(), $property->name);
 	}
 
 	/**
@@ -111,7 +111,7 @@ trait ConfigFieldTrait {
 		}
 		$resolver = match ($field->type) {
 			"bool", "boolean", "int", "integer", "float", "double", "string", "array" => new BuiltinFieldResolver($property->name, $field->type),
-			default => ClassFieldResolver::createFromProperty($property)
+			default => ClassFieldResolver::createFromClassAndName($field->type, $property->name)
 		};
 
 		if ($resolver instanceof ClassFieldResolver) {

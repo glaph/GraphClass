@@ -47,19 +47,16 @@ final class ClassFieldResolver implements FieldResolver {
 		);
 	}
 
-	public static function createFromProperty(\ReflectionProperty $property): self {
-		$className = $property->getType()->getName();
+	public static function createFromClassAndName(string $className, string $propertyName): self {
 		$reflection = new ReflectionClass($className);
 		$constructParams = [];
 		$params = $reflection->getConstructor()?->getParameters() ?? [];
-		$i = 0;
 		foreach ($params as $param) {
 			$constructParams[$param->getName()] = 0;
-			$constructParams[$i++] = 0;
 		}
 
 		return new self(
-			property: $property->name,
+			property: $propertyName,
 			class: $className,
 			constructParams: $constructParams
 		);
