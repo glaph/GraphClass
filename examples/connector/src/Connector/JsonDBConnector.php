@@ -36,7 +36,7 @@ class JsonDBConnector implements Connector {
 		}
 	}
 
-	public function submit(Request $request, Response $response): ?int {
+	public function submit(Request $request, Response $response): ?Response\Key {
 		return null;
 	}
 }

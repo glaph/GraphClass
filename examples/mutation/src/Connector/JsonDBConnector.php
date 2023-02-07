@@ -44,28 +44,40 @@ class JsonDBConnector implements Connector {
 		}
 	}
 
-	public function submit(Request $request, Response $response): ?int {
+	public function submit(Request $request, Response $response): ?Response\Key {
 		$data = $this->readJsonFile($request->group);
 		if (!$data) {
 			return null;
 		}
 
-		$keys = $request->keys->values ? $request->keys : ["new" => [$request->keys->names[0] => count($data)]];
+		$values = [];
+		foreach ($request->fields as $fieldName => $value) {
+			$values[$fieldName] = $value;
+		}
 		$key = null;
-
-		foreach ($keys as $key) {
-			$values = $data[$key[$request->keys->names[0]]] ?? $key;
-			foreach ($request->fields as $fieldName => $value) {
-				$values[$fieldName] = $value;
-			}
-			$data[$key[$request->keys->names[0]]] = $values;
+		foreach ($request->keys as $hash => $keys) {
+			$key = $this->recursiveDataInjection($keys, $data, $values);
 		}
 
 		$jsonPath = "$this->root/db/$request->group.json";
 		$encoded = json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT);
 		file_put_contents($jsonPath, $encoded);
 
-		return $key[$request->keys->names[0]];
+		return $key;
+	}
+
+	private function recursiveDataInjection(array &$keys, ?array &$data, array $values): Response\Key {
+		$keyName = key($keys);
+		if ($keyName === null) {
+			$data = array_merge($data ?? [], $values);
+			return new Response\Key();
+		}
+		$value = current($keys) ?? count($data);
+		unset($keys[$keyName]);
+		$values[$keyName] = $value;
+		$key = $this->recursiveDataInjection($keys, $data[$value], $values);
+
+		return $key->addKey($keyName, $value);
 	}
 
 	private function readJsonFile(string $name): ?array {

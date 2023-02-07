@@ -29,11 +29,7 @@ final class Connection {
 		if (!isset($this->builders[$hash])) {
 			$ids = [];
 			foreach ($type::getConfig()->type->ids as $name => $resolver) {
-				if (!isset($type->$name)) {
-					$ids = [];
-					break;
-				}
-				$ids[$name] = $type->$name;
+				$ids[$name] = $type->$name ?? null;
 			}
 			$this->builders[$hash] = new Request\Builder($ids);
 		}

@@ -28,7 +28,7 @@ final class ClassFieldResolver implements FieldResolver {
 		$newData = is_array($data) ? $data : [$data];
 		$newData = array_intersect_key($newData, $this->constructParams);
 
-		if (count($newData) === count($this->constructParams)) {
+		if (count($newData) === count($this->constructParams)/2) {
 			return new ($this->class)(...$newData);
 		}
 
@@ -51,8 +51,9 @@ final class ClassFieldResolver implements FieldResolver {
 		$reflection = new ReflectionClass($className);
 		$constructParams = [];
 		$params = $reflection->getConstructor()?->getParameters() ?? [];
-		foreach ($params as $param) {
-			$constructParams[$param->getName()] = 0;
+		foreach ($params as $index => $param) {
+			$constructParams[$param->getName()] = null;
+			$constructParams[$index] = null;
 		}
 
 		return new self(
